@@ -1,12 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <iostream>
 #include <math.h>
-#include <time.h>
+#include <chrono>
 #define PI 3.1415926535897932384
 #define N_MAX 10000000
 int main()
 {
-	clock_t begin = clock();
+	auto begin = std::chrono::steady_clock::now();
 	double* arr = (double*)malloc(sizeof(double)*N_MAX);
 	double sum = 0;
 #pragma acc data create (arr[0:N_MAX])
@@ -25,10 +26,11 @@ int main()
 			}
 		}
 	}
-	clock_t end = clock();
-	double time_spent = (double)(end - begin) * 1000 / CLOCKS_PER_SEC;
-	printf("%0.17f\n",sum);
-	printf("%f\n",time_spent);
+	
+	std::cout<<sum<<std::endl;
+	auto end = std::chrono::steady_clock::now();
+	auto elapsed_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end-begin);
+	std::cout<<"time: "<<elapsed_ms.count()<<"ms\n";
 	free(arr);
 	return 0;
 }
